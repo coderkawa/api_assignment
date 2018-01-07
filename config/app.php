@@ -125,6 +125,8 @@ return [
 
     'log_level' => env('APP_LOG_LEVEL', 'debug'),
 
+    'nhtsa_api_url' => env('NHTSA_API_URL','https://one.nhtsa.gov/webapi/api/SafetyRatings/'),
+
     /*
     |--------------------------------------------------------------------------
     | Autoloaded Service Providers

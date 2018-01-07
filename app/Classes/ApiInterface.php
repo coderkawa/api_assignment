@@ -11,7 +11,8 @@ class ApiInterface
 
     function __construct()
     {
-        $this->client = new Client(['base_uri' => 'https://one.nhtsa.gov/webapi/api/SafetyRatings/']);
+        $api_url = config('app.nhtsa_api_url');
+        $this->client = new Client(['base_uri' => $api_url]);
     }
 
     public function getVehicles($year, $manufacturer, $model)

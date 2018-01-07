@@ -23,6 +23,7 @@ class ResponseFormat
         {
             $response['Count'] = $vehicles['Count'];
         }
+
         if(isset($vehicles['Results']))
         {
             foreach ($vehicles['Results'] as $vehicle)
@@ -40,6 +41,7 @@ class ResponseFormat
                 {
                     $tempArray['CrashRating'] = $ratings[$vehicleId]['Results'][0]['OverallRating'];
                 }
+
                 if(isset($vehicle['VehicleDescription']))
                 {
                     $tempArray['Description'] = $vehicle['VehicleDescription'];

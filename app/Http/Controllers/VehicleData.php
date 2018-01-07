@@ -16,6 +16,7 @@ class VehicleData extends Controller
 
         $abcd = new ApiInterface();
         $vehicles = $abcd->getVehicles($year, $manufacturer, $model);
+        $vehicleDescription =[];
 
         if($vehicles['Count']>0)
         {
@@ -56,6 +57,13 @@ class VehicleData extends Controller
             $model = $inputData['model'];
             $abcd = new ApiInterface();
             $vehicles = $abcd->getVehicles($year, $manufacturer, $model);
+            $responseFormatObj = new ResponseFormat();
+            $formattedOutput = $responseFormatObj->formatOutput($vehicles);
+            return response()->json($formattedOutput);
+        }
+        else
+        {
+            $vehicles = [];
             $responseFormatObj = new ResponseFormat();
             $formattedOutput = $responseFormatObj->formatOutput($vehicles);
             return response()->json($formattedOutput);
