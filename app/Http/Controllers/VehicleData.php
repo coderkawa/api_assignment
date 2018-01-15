@@ -11,11 +11,15 @@ use App\Classes\ResponseFormat;
 
 class VehicleData extends Controller
 {
-    public function getdata($year, $manufacturer, $model)
+    public function __construct(ApiInterface $apiInterface, ResponseFormat $responseFormat)
     {
+        $this->apiInterface = $apiInterface;
+        $this->responseFormat = $responseFormat;
+    }
 
-        $abcd = new ApiInterface();
-        $vehicles = $abcd->getVehicles($year, $manufacturer, $model);
+    public function getData($year, $manufacturer, $model)
+    {
+        $vehicles = $this->apiInterface->getVehicles($year, $manufacturer, $model);
         $vehicleDescription =[];
 
         if($vehicles['Count']>0)
@@ -28,19 +32,17 @@ class VehicleData extends Controller
 
             if(Input::get('withRating')=='true')
             {
-                $vehicleDescription = $abcd->getVehicleRating($vehicleIds);
+                $vehicleDescription = $this->apiInterface->getVehicleRating($vehicleIds);
             }
         }
 
-        $responseFormatObj = new ResponseFormat();
-
         if(Input::get('withRating')=='true')
         {
-            $formattedOutput = $responseFormatObj->formatOutputWithRatings($vehicles,$vehicleDescription);
+            $formattedOutput = $this->responseFormat->formatOutputWithRatings($vehicles,$vehicleDescription);
         }
         else
         {
-            $formattedOutput = $responseFormatObj->formatOutput($vehicles);
+            $formattedOutput = $this->responseFormat->formatOutput($vehicles);
         }
 
         return response()->json($formattedOutput);
@@ -50,24 +52,17 @@ class VehicleData extends Controller
     public function postData(Request $request)
     {
         $inputData = $request->json()->all();
+        $vehicles = [];
         if(isset($inputData['modelYear']) && isset($inputData['manufacturer']) && isset($inputData['model']))
         {
             $year = $inputData['modelYear'];
             $manufacturer = $inputData['manufacturer'];
             $model = $inputData['model'];
-            $abcd = new ApiInterface();
-            $vehicles = $abcd->getVehicles($year, $manufacturer, $model);
-            $responseFormatObj = new ResponseFormat();
-            $formattedOutput = $responseFormatObj->formatOutput($vehicles);
-            return response()->json($formattedOutput);
+            $vehicles = $this->apiInterface->getVehicles($year, $manufacturer, $model);
         }
-        else
-        {
-            $vehicles = [];
-            $responseFormatObj = new ResponseFormat();
-            $formattedOutput = $responseFormatObj->formatOutput($vehicles);
-            return response()->json($formattedOutput);
-        }
+        
+        $formattedOutput = $this->responseFormat->formatOutput($vehicles);
+        return response()->json($formattedOutput);
     }
 
 }
